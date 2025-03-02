@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "green", "id": "node_1", "label": "Bronislav greets Hendricks", "shape": "dot", "title": "Dialogue: \"Hey! Hendricks!\" \n \"Oh! Hello Bronislav, how are you doing?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_2", "label": "Bronislav is doing great", "shape": "dot", "title": "Dialogue: \"I\u0027m doing great, thanks for asking! How about yourself?\"\n\"I\u0027m alright. Things seem to be getting a little crazy as we get closer to the conference.\"\n\"Tell me about it, the deadline crunch is pretty stressful.\"\n\"Talking about that, how\u0027s the paper going?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_3", "label": "Bronislav is doing alright", "shape": "dot", "title": "Dialogue: \"I\u0027m doing alright...\" \n \"You ok? You look like you have something on your mind.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_4", "label": "Bronislav confesses to not doing well", "shape": "dot", "title": "Dialogue: \"I\u0027m not doing too great, to be honest.\"\n\"What\u0027s the matter?\"\n\"It\u0027s just some lab drama, that\u0027s all\"\n\"You know you can talk to me, right?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_5", "label": "Bronislav says he\u0027s got a good feeling about the paper and Hendricks asks about Jensen potentially being on", "shape": "dot", "title": "Dialogue: \"It\u0027s going good! I have a good feeling about this!\"\n\"That\u0027s good! And I heard you\u0027re considering putting Jenson on it?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_12", "label": "Hendricks asks what\u0027s bothering Bronislav.", "shape": "dot", "title": "Dialogue: \"What is it?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_11", "label": "Hendricks further pushes Bronislav to open up.", "shape": "dot", "title": "Dialogue: \"Ok... You know you can always talk to me, right? Circle of trust.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "red", "id": "node_21", "label": "Hendricks leaves after Bronislav avoiding opening up.", "shape": "dot", "title": "Dialogue: \"If there\u0027s nothing else, I\u0027ve got to run to a meeting. Good seeing you, and good luck on the paper!\" \n \"Thanks, see you later!\" \n You watch her walk out of the cafe.\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 10\n    },\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -10\n    }\n  ]\n}"}, {"color": "lightblue", "id": "node_15", "label": "Bronislav begins to open up about Ivy situation.", "shape": "dot", "title": "Dialogue: \"Hm?\" \n \"Yeah... We\u0027ve just not been getting along recently.\" \n \"I\u0027m sorry to hear that. What happened?\" \n \"Well, her uncle has this job opening and I could really use the position... It\u0027s prestigious and would supply a Visa for me.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_10", "label": "Bronislav says he\u0027s considering putting Jensen on his paper.", "shape": "dot", "title": "Dialogue: \"Great! So what has Jensen been helping with?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_6", "label": "Bronislav says he\u0027s not considering putting Jensen on the paper", "shape": "dot", "title": "Dialogue: \"No not really.\"\n\"Oh, well that\u0027s what I heard from Ivy.\"\n\"Yeah well I\u0027m still on the fence about it.\" \n \"Is everything ok between you and Ivy?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_7", "label": "Bronislav plays off that him and Ivy are ok.", "shape": "dot", "title": "Dialogue: \"Hmm... Ok.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_8", "label": "Bronislav asks about Hendrick\u0027s suspicions while having a negative or neutral relationship with Ivy.", "shape": "dot", "title": "Dialogue: \"Well... Ivy told me she seemed frustrated because she has been trying to help Jensen but something is getting in the way and she won\u0027t say what...\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_26", "label": "Bronislav asks about Hendrick\u0027s suspicions while having a positive relationship with Ivy.", "shape": "dot", "title": "Dialogue: \"Well... Ivy\u0027s been telling me she\u0027s pretty glad that Jenson\u0027s getting put on your paper but you\u0027re telling me that he\u0027s not?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_9", "label": "Bronislav defends Ivy while having a positive relationship with Ivy.", "shape": "dot", "title": "Dialogue: \"Ivy is a good friend, if she\u0027s got a problem then she\u0027d tell me.\" \n \"Well... I\u0027m hearing two different stories between you and Ivy.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_27", "label": "Bronislav defends Ivy while having a negative/neutral relationship with Ivy.", "shape": "dot", "title": "Dialogue: \"Ivy is a good friend, if she\u0027s got a problem then she\u0027d tell me.\" \n \"Last time I spoke to her it seemed pretty obvious that her frustration was poitned at you. I don\u0027t want to try to quote her as to not put words in her mouth.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_13", "label": "Bronislav explains the deal offered by Ivy: Jensen authorship for a job with a Visa", "shape": "dot", "title": "Dialogue: \"Ivy\u0027s uncle owns a company that has a job offering that could provide a Visa; but she won\u0027t give me a recommendation unless I put Jensen on the paper.\" \n \"Bronislav, that is not ok at all.\" \n \"It\u0027s ok! I just need to put his name on the paper and then I\u0027ll be golden.\" \n \"No, I mean that\u0027s quid pro quo.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "lightblue", "id": "node_14", "label": "Bronislav defends Jensen to justify him on the paper.", "shape": "dot", "title": "Dialogue: \"Jensen is a good guy, I know he deserves to be on it.\" \n \"Alright... I\u0027ll trust your judgment. Are you sure there\u0027s nothing you want me to know about?\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "blue", "id": "node_17", "label": "Hendricks explains quid pro quo.", "shape": "dot", "title": "Dialogue: \"Quid pro quo is when someone takes offers an inappropriate material deal to take advantage of a compromising situation - one in which they have power, leverage, and resources to control the outcome.\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 30\n    }\n  ]\n}"}, {"color": "red", "id": "node_28", "label": "Hendricks leaves, disappointed with Bronislav\u0027s avoidance.", "shape": "dot", "title": "Dialogue: \"I\u0027m not sure you will be. Please be careful - you could be crossing a major ethical line with this situation. I\u0027ve got to run to a meeting - take care.\" You watch her walk out of the cafe.\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 10\n    },\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -30\n    }\n  ]\n}"}, {"color": "red", "id": "node_29", "label": "Hendricks leaves, concerned by Bronislav\u0027s avoidance.", "shape": "dot", "title": "Dialogue: \"Ah - I hope so, Bronislav. If you need anything or are conflicted, you can always come to me to share. Unfortunately, I\u0027ve got to run to a meeting. See you later!\" You watch her walk out of the cafe.\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 10\n    },\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -10\n    }\n  ]\n}"}, {"color": "blue", "id": "node_22", "label": "Bronislav shares details of deal.", "shape": "dot", "title": "Dialogue: \"But she won\u0027t give me a recommendation unless I put Jensen on the paper.\" \n \"Bronislav, that\u0027s not ok at all.\" \n \"It does feel weird.\" \n \"No, I mean that\u0027s quid pro quo.\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 10\n    }\n  ]\n}"}, {"color": "blue", "id": "node_23", "label": "Bronislav begins to open up about the situation.", "shape": "dot", "title": "Dialogue: \"But she just won\u0027t give me the recommendation.\" \n \"That sounds like a frustrating situation.\" \n \"Yeah, it really is.\" \n \"Do you understand why she\u0027s mad?\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 20\n    }\n  ]\n}"}, {"color": "blue", "id": "node_24", "label": "Bronislav shuts down the conversation.", "shape": "dot", "title": "Dialogue: \"But... I don\u0027t know. It\u0027s very complicated.\" \n \"Do you want to talk about it?\" \n \"I would rather not.\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -10\n    }\n  ]\n}"}, {"color": "lightblue", "id": "node_18", "label": "Hendricks explains what to do about quid pro quo situations.", "shape": "dot", "title": "Dialogue: \"First, don\u0027t put Jensen on the paper if you don\u0027t want to without the deal being offered. Do you want to add him if the deal wasn\u0027t there?\" \n \"Not even a little bit.\" \n \"Then don\u0027t. Secondarily, I\u0027m going to have to discuss this with Ned. This is extremely unacceptable behavior from a grad student.\"\nStat Changes: {\n  \"relationships\": []\n}"}, {"color": "blue", "id": "node_25", "label": "Bronislav is unsure why Ivy is upset.", "shape": "dot", "title": "Dialogue: \"Why do you think she is?\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -10\n    }\n  ]\n}"}, {"color": "blue", "id": "node_19", "label": "Bronislav asks to not tell Ned, Hendricks says she has to due to ethics.", "shape": "dot", "title": "Dialogue: \"Please don\u0027t tell Ned! Ivy is a good friend of mine and I don\u0027t want to get her in trouble.\" \n \"I understand, but you aren\u0027t the one getting her in trouble. She got herself in trouble by trying to pressure you into doing something unethical.\"\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -10\n    }\n  ]\n}"}, {"color": "red", "id": "node_20", "label": "Hendricks leaves with incriminating knowledge about Ivy.", "shape": "dot", "title": "Dialogue: \"Ok. Now if you\u0027ll excuse me, I need to run to a meeting.\" \n \"I\u0027ll see you later, Hendricks.\" \n She walks away before turning back to say more to you. \n \"Hey, thank you for telling me about this. I\u0027m glad to know we have trust. Everything will work out. If you need any help, I\u0027m always here.\" \n \"Thank you, Hendricks.\" \n You watch her walk out of the cafe.\nStat Changes: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": -50\n    },\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_stat_change\": 20\n    }\n  ]\n}"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "black", "from": "node_1", "title": "Choice: Doing great!\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_2"}, {"arrows": "to", "color": "black", "from": "node_1", "title": "Choice: Doing alright.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_3"}, {"arrows": "to", "color": "black", "from": "node_1", "title": "Choice: Not doing too well.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_4"}, {"arrows": "to", "color": "black", "from": "node_2", "title": "Choice: It\u0027s going good.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_5"}, {"arrows": "to", "color": "black", "from": "node_2", "title": "Choice: There\u0027s something that\u0027s bothering me.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_12"}, {"arrows": "to", "color": "black", "from": "node_3", "title": "Choice: I\u0027m ok.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_11"}, {"arrows": "to", "color": "black", "from": "node_3", "title": "Choice: There\u0027s something that\u0027s bothering me.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_12"}, {"arrows": "to", "color": "black", "from": "node_4", "title": "Choice: I know.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_21"}, {"arrows": "to", "color": "black", "from": "node_4", "title": "Choice: It\u0027s Ivy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_15"}, {"arrows": "to", "color": "black", "from": "node_5", "title": "Choice: Yeah.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_10"}, {"arrows": "to", "color": "black", "from": "node_5", "title": "Choice: Nope.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_6"}, {"arrows": "to", "color": "black", "from": "node_12", "title": "Choice: Nevermind.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_21"}, {"arrows": "to", "color": "black", "from": "node_12", "title": "Choice: It\u0027s Ivy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_15"}, {"arrows": "to", "color": "black", "from": "node_11", "title": "Choice: I know.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_21"}, {"arrows": "to", "color": "black", "from": "node_11", "title": "Choice: It\u0027s Ivy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_15"}, {"arrows": "to", "color": "blue", "from": "node_15", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"gte\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_22"}, {"arrows": "to", "color": "blue", "from": "node_15", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"range\",\n      \"relationship_threshold\": [\n        31,\n        69\n      ]\n    }\n  ]\n}", "to": "node_23"}, {"arrows": "to", "color": "blue", "from": "node_15", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Hendricks\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"lte\",\n      \"relationship_threshold\": 30\n    }\n  ]\n}", "to": "node_24"}, {"arrows": "to", "color": "black", "from": "node_10", "title": "Choice: I\u0027m doing it for Ivy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_13"}, {"arrows": "to", "color": "black", "from": "node_10", "title": "Choice: He\u0027s a good guy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_14"}, {"arrows": "to", "color": "black", "from": "node_6", "title": "Choice: Yeah we\u0027re good.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_7"}, {"arrows": "to", "color": "black", "from": "node_6", "title": "Choice: No, not really.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_12"}, {"arrows": "to", "color": "blue", "from": "node_7", "title": "Choice: Why do you ask?\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"lt\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_8"}, {"arrows": "to", "color": "blue", "from": "node_7", "title": "Choice: Why do you ask?\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"gte\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_26"}, {"arrows": "to", "color": "blue", "from": "node_7", "title": "Choice: Ivy\u0027s a good friend.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"gte\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_9"}, {"arrows": "to", "color": "blue", "from": "node_7", "title": "Choice: Ivy\u0027s a good friend.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"lt\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_27"}, {"arrows": "to", "color": "black", "from": "node_8", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_11"}, {"arrows": "to", "color": "black", "from": "node_26", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_11"}, {"arrows": "to", "color": "black", "from": "node_9", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_11"}, {"arrows": "to", "color": "black", "from": "node_27", "title": "Choice: Continue.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_11"}, {"arrows": "to", "color": "black", "from": "node_13", "title": "Choice: What\u0027s quid pro quo?\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_17"}, {"arrows": "to", "color": "black", "from": "node_13", "title": "Choice: I\u0027ll be ok, Hendricks.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_28"}, {"arrows": "to", "color": "black", "from": "node_14", "title": "Choice: No, everything is fine.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_29"}, {"arrows": "to", "color": "black", "from": "node_14", "title": "Choice: It\u0027s Ivy.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_15"}, {"arrows": "to", "color": "black", "from": "node_17", "title": "Choice: What do I do?\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_18"}, {"arrows": "to", "color": "black", "from": "node_22", "title": "Choice: What\u0027s quid pro quo?\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_17"}, {"arrows": "to", "color": "black", "from": "node_22", "title": "Choice: What do I do?\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_18"}, {"arrows": "to", "color": "black", "from": "node_23", "title": "Choice: Not at all.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_25"}, {"arrows": "to", "color": "black", "from": "node_24", "title": "Choice: Don\u0027t worry - I\u0027m good.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_29"}, {"arrows": "to", "color": "blue", "from": "node_18", "title": "Choice: Please, don\u0027t tell Ned.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"gte\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_19"}, {"arrows": "to", "color": "black", "from": "node_18", "title": "Choice: I understand.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_20"}, {"arrows": "to", "color": "black", "from": "node_25", "title": "Choice: I won\u0027t put Jensen on my paper.\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_13"}, {"arrows": "to", "color": "blue", "from": "node_25", "title": "Choice: Don\u0027t worry about it, I\u0027m not a gossip.\nPreconditions: {\n  \"relationships\": [\n    {\n      \"character1\": \"Bronislav\",\n      \"character2\": \"Ivy\",\n      \"relationship_stat\": \"relationship\",\n      \"relationship_symbol\": \"gt\",\n      \"relationship_threshold\": 70\n    }\n  ]\n}", "to": "node_21"}, {"arrows": "to", "color": "black", "from": "node_19", "title": "Choice: I understand...\nPreconditions: {\n  \"relationships\": []\n}", "to": "node_20"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
